@@ -7,22 +7,25 @@ int main(int argc, char *argv[]) {
     int api = atoi(argv[1]);
     int txs = atoi(argv[2]);
     int bot = atoi(argv[3]);
-    // Gunakan %lf untuk membaca double dari bash
-    double max_eth = atof(argv[4]);
-    double avg_eth = atof(argv[5]);
+    double max_gwei = atof(argv[4]);
+    double avg_gwei = atof(argv[5]);
 
-    printf("🤖 *GERBANGKU INTEL*\n");
-    printf("API: %s | BLOK: %d TX\n", (api == 1) ? "OK" : "ERR", txs);
-    printf("👥 ESTIMASI BOT: %d\n", bot);
+    printf("🤖 *INTEL GERBANGKU*\n");
+    printf("API: %s | TXS: %d\n", (api == 1) ? "OK" : "ERR", txs);
+    printf("👥 BOTS: %d (Potensi Rival)\n", bot);
     printf("--------------------\n");
-    // Print dengan presisi lebih tinggi
-    printf("💸 MAX BRIBE: %.9f ETH\n", max_eth);
-    printf("📊 AVG BRIBE: %.9f ETH\n", avg_eth);
+    printf("💸 MAX BRIBE: %.2f Gwei\n", max_gwei);
+    printf("📊 AVG BRIBE: %.2f Gwei\n", avg_gwei);
     printf("--------------------\n");
 
-    if (bot > 80) printf("⚠️ STATUS: PADAT (High Competition)\n");
-    else if (max_eth > 0.01) printf("🔥 STATUS: PERANG PAUS\n");
-    else printf("🟢 STATUS: SEPI\n");
+    // Analisis Peluang
+    if (bot > 50 && max_gwei < 10.0) {
+        printf("🟢 PELUANG: Bot lawan pelit! Sikat dengan Bribe 15-20 Gwei.\n");
+    } else if (max_gwei > 100.0) {
+        printf("🔥 BAHAYA: Perang Bribe Tinggi. Hindari dulu.\n");
+    } else {
+        printf("🟡 STATUS: Normal.\n");
+    }
 
     return 0;
 }
