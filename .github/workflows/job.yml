@@ -10,9 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt install jq gcc -y
-      - env:
+      - name: J
+        env:
           RPC_URL: ${{ secrets.RPC_URL }}
         run: |
-          chmod +x bin/run.sh
-          ./bin/run.sh
+          # 1. Compile Otak (bot.c)
+          gcc bot.c -o bot
+          
+          # 2. Paksa Izin Jalan (chmod)
+          chmod +x run.sh
+          
+          # 3. Eksekusi
+          ./run.sh
