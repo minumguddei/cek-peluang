@@ -1,29 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+// Struktur data transaksi
+typedef struct {
+    char *target_token;
+    double min_profit_usd;
+    double max_bribe_gwei;
+} Strategy;
+
+// Fungsi simulasi eksekusi transaksi ke Blockchain
+void execute_trade(Strategy s, double current_bribe) {
+    printf("\n[!] MENCETAK TRANSAKSI...\n");
+    printf("Target  : %s\n", s.target_token);
+    printf("Bribe   : %.2f Gwei\n", current_bribe + 1.0); // Salip sedikit
+    printf("Status  : MENGIRIM KE MEMPOOL VIA RPC...\n");
+    
+    // Di sini nantinya akan diisi logic web3 (signing transaction)
+    printf("HASIL   : SUCCESS! Transaksi masuk ke blok.\n");
+}
 
 int main(int argc, char *argv[]) {
-    if (argc < 6) return 1;
+    if (argc < 4) {
+        printf("Gunakan: ./engine [BOT_COUNT] [MAX_GWEI] [ETH_PRICE]\n");
+        return 1;
+    }
 
-    int api = atoi(argv[1]);
-    int txs = atoi(argv[2]);
-    int bot = atoi(argv[3]);
-    double max_g = atof(argv[4]);
-    double eth_p = atof(argv[5]); // Harga real-time dari script
-    
-    double gas_u = 250000.0; 
-    double usd_v = (max_g * gas_u * 1e-9) * eth_p;
+    // Ambil data dari sistem intelijen
+    int bots_active = atoi(argv[1]);
+    double current_max_gwei = atof(argv[2]);
+    double eth_price = atof(argv[3]);
 
-    printf("🤖 *GERBANGKU INTEL*\n");
-    printf("API: %s | BLOK: %d TX\n", (api == 1) ? "OK" : "ERR", txs);
-    printf("👥 BOTS: %d | ETH: $%.2f\n", bot, eth_p);
-    printf("--------------------\n");
-    printf("💸 MAX: %.2f Gwei\n", max_g);
-    printf("💵 COST: $%.2f\n", usd_v);
-    printf("--------------------\n");
+    // Setup Strategi
+    Strategy my_bot = {"XRP/USDT", 5.0, 50.0}; 
 
-    if (bot > 100) printf("⚠️ PADAT\n");
-    else if (usd_v < 1.5) printf("🟢 MURAH (SIKAT)\n");
-    else printf("🟡 NORMAL\n");
+    printf("--- GERBANGKU ENGINE START ---\n");
+    printf("Monitoring rival: %d bot aktif\n", bots_active);
+
+    // LOGIKA KEPUTUSAN (Decision Engine)
+    if (bots_active < 40 && current_max_gwei < my_bot.max_bribe_gwei) {
+        printf("Kondisi: IDEAL. Bot lawan pelit.\n");
+        execute_trade(my_bot, current_max_gwei);
+    } else {
+        printf("Kondisi: SKIP. Persaingan terlalu ketat atau suap terlalu mahal.\n");
+    }
 
     return 0;
 }
