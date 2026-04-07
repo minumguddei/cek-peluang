@@ -2,7 +2,7 @@ name: G
 
 on:
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '*/5 * * * *' # Diubah dari 20 menit ke 5 menit (batas maksimal gratis)
   workflow_dispatch:
 
 jobs:
@@ -14,11 +14,6 @@ jobs:
         env:
           RPC_URL: ${{ secrets.RPC_URL }}
         run: |
-          # 1. Compile Otak (bot.c)
           gcc bot.c -o bot
-          
-          # 2. Paksa Izin Jalan (chmod)
           chmod +x run.sh
-          
-          # 3. Eksekusi
           ./run.sh
