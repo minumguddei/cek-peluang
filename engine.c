@@ -8,22 +8,23 @@ int main(int argc, char *argv[]) {
     double max_g = atof(argv[2]);
     double eth_p = atof(argv[3]);
 
-    double target_profit_usd = 5.0;
     double gas_used = 250000.0;
     double cost_usd = (max_g * gas_used * 1e-9) * eth_p;
-    double net_profit = target_profit_usd - cost_usd;
 
     printf("\n--- 🤖 EKSEKUTOR GERBANGKU ---\n");
-    printf("Target Profit : $%.2f\n", target_profit_usd);
-    printf("Estimasi Biaya: $%.2f\n", cost_usd);
+    printf("Biaya Gas Lawan: $%.2f\n", cost_usd);
     
-    if (net_profit > 1.0 && bots < 100) { // Saya naikkan batas ke 100 agar lebih berani
-        printf("KONDISI: 🟢 MENGUNTUNGKAN (Net: $%.2f)\n", net_profit);
-        printf("[!] ACTION: MENGIRIM TRANSAKSI...\n");
-    } else if (bots >= 100) {
-        printf("KONDISI: 🔴 SKIP (Rival Terlalu Banyak: %d)\n", bots);
+    // ANALISIS SINYAL
+    if (max_g > 15.0) {
+        printf("⚠️ SINYAL: PAUS TERDETEKSI!\n");
+        printf("INFO: Ada bot yang ngejar profit > $20.\n");
+        printf("KONDISI: 🔴 JANGAN LAWAN (Modal suap mereka terlalu kuat).\n");
+    } else if (max_g < 5.0 && bots > 0) {
+        printf("✅ SINYAL: BOT RAKSASA LAGI PELIT.\n");
+        printf("KONDISI: 🟢 PELUANG SNIPE (Bisa disalip pakai $2 - $3).\n");
     } else {
-        printf("KONDISI: 🟡 SKIP (Biaya Gas Mahal/Profit Tipis)\n");
+        printf("KONDISI: 🟡 PASAR NORMAL/SEPI.\n");
     }
+
     return 0;
 }
