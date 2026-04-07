@@ -7,19 +7,22 @@ int main(int argc, char *argv[]) {
     int api = atoi(argv[1]);
     int txs = atoi(argv[2]);
     int bot = atoi(argv[3]);
-    double max = atof(argv[4]);
-    double avg = atof(argv[5]);
+    // Gunakan %lf untuk membaca double dari bash
+    double max_eth = atof(argv[4]);
+    double avg_eth = atof(argv[5]);
 
     printf("🤖 *GERBANGKU INTEL*\n");
-    printf("API: %s\n", (api == 1) ? "OK" : "ERR");
-    printf("TXS: %d | BOTS: %d\n", txs, bot);
-    printf("MAX: %.6f ETH\n", max);
-    printf("AVG: %.6f ETH\n", avg);
+    printf("API: %s | BLOK: %d TX\n", (api == 1) ? "OK" : "ERR", txs);
+    printf("👥 ESTIMASI BOT: %d\n", bot);
+    printf("--------------------\n");
+    // Print dengan presisi lebih tinggi
+    printf("💸 MAX BRIBE: %.9f ETH\n", max_eth);
+    printf("📊 AVG BRIBE: %.9f ETH\n", avg_eth);
     printf("--------------------\n");
 
-    if (bot > 100) printf("⚠️ PADAT\n");
-    else if (max > 0.05) printf("🔥 PAUS\n");
-    else printf("🟢 SEPI\n");
+    if (bot > 80) printf("⚠️ STATUS: PADAT (High Competition)\n");
+    else if (max_eth > 0.01) printf("🔥 STATUS: PERANG PAUS\n");
+    else printf("🟢 STATUS: SEPI\n");
 
     return 0;
 }
