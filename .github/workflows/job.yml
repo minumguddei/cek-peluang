@@ -2,18 +2,33 @@ name: G
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Diubah dari 20 menit ke 5 menit (batas maksimal gratis)
-  workflow_dispatch:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Agar Anda bisa klik tombol 'Run Workflow' manual
 
 jobs:
   run:
     runs-on: ubuntu-latest
+    permissions: # Izin untuk melakukan push balik ke repo
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: J
+
+      - name: Setup
+        run: sudo apt install jq gcc -y
+
+      - name: Run
         env:
           RPC_URL: ${{ secrets.RPC_URL }}
         run: |
           gcc bot.c -o bot
           chmod +x run.sh
           ./run.sh
+
+      - name: Keep-Alive (Force Active)
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          echo "$(date)" > last_run.txt
+          git add last_run.txt
+          git commit -m "Heartbeat: $(date)" || exit 0
+          git push
