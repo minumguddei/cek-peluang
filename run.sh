@@ -9,18 +9,26 @@ curl -s -X POST -H "Content-Type: application/json" \
 --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", true],"id":1}' \
 $RPC_URL > temp.json
 
-# 3. Parsing (Python)
+# 3. Parsing (Python - Versi Fix Tanda Kurung)
 STATS=$(python3 -c "
 import json
 try:
     with open('temp.json', 'r') as f:
         data = json.load(f)
     txs = data['result']['transactions']
-    bots = [t for t in txs if int(t['gas'], 16) > 150000]
-    bribes = [int(t.get('maxPriorityFeePerGas') or t.get('gasPrice') or '0x0'), 16) / 1e9 for t in txs]
+    
+    # Hitung Bot
+    bots = [t for t in txs if int(t.get('gas', '0x0'), 16) > 150000]
+    
+    # Hitung Bribe (Gwei) - Perbaikan logika di sini
+    bribes = []
+    for t in txs:
+        p_hex = t.get('maxPriorityFeePerGas') or t.get('gasPrice') or '0x0'
+        bribes.append(int(p_hex, 16) / 1e9)
+    
     mx = max(bribes) if bribes else 0.0
     print(f'{len(txs)} {len(bots)} {mx:.2f}')
-except:
+except Exception as e:
     print('0 0 0.00')
 ")
 
@@ -28,16 +36,17 @@ T=$(echo $STATS | cut -d' ' -f1)
 B=$(echo $STATS | cut -d' ' -f2)
 M=$(echo $STATS | cut -d' ' -f3)
 
-# 4. Bersihkan Laporan Lama & Jalankan Engine Baru
+# 4. Buat Laporan Visual
 echo "--- 📊 AUDIT BLOK ---" > out.txt
 echo "Total TX: $T | Rival: $B" >> out.txt
 echo "Bribe Tertinggi: $M Gwei" >> out.txt
 
+# 5. Jalankan Engine Eksekusi
 gcc engine.c -o engine
 ./engine $B $M $ETH_PRICE >> out.txt
 
-# 5. Timestamp & Kirim
+# 6. Timestamp & Kirim
 echo -e "\n$(date)" >> out.txt
-curl -H "Title: Gerbangku Intel" -d "$(<out.txt)" https://ntfy.sh/GERBANGKU
+curl -H "Title: Gerbangku System" -d "$(<out.txt)" https://ntfy.sh/GERBANGKU
 
 rm temp.json
